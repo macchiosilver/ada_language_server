@@ -49,6 +49,12 @@ package body LSP.Ada_Handlers is
    type Cancel_Countdown is mod 128;
    --  Counter to restrict frequency of Request.Canceled checks
 
+   Allow_Incremental_Text_Changes : constant GNATCOLL.Traces.Trace_Handle :=
+     GNATCOLL.Traces.Create ("ALS.ALLOW_INCREMENTAL_TEXT_CHANGES",
+                             GNATCOLL.Traces.Off);
+   --  Trace to activate the support for incremental text changes.
+   --  This will be made active by default once it's been field-tested.
+
    Is_Parent : constant LSP.Messages.AlsReferenceKind_Set :=
      (Is_Server_Side => True,
       As_Flags => (LSP.Messages.Parent => True, others => False));
@@ -421,7 +427,12 @@ package body LSP.Ada_Handlers is
         (Is_Set => True,
          Value  => (prepareProvider => (Is_Set => False)));
       Response.result.capabilities.textDocumentSync :=
-        (Is_Set => True, Is_Number => True, Value => LSP.Messages.Full);
+        (Is_Set => True, Is_Number => True,
+         Value  =>
+           (if Allow_Incremental_Text_Changes.Active then
+               LSP.Messages.Incremental
+            else
+               LSP.Messages.Full));
       Response.result.capabilities.completionProvider :=
         (True,
          (resolveProvider => (True, False),
@@ -955,12 +966,24 @@ package body LSP.Ada_Handlers is
       Diag     : LSP.Messages.PublishDiagnosticsParams;
       Diags_Already_Published : Boolean := False;
    begin
-      if Skip_Did_Change then
-         --  Don't process the notification if next message overrides it
-         return;
-      end if;
+      if Allow_Incremental_Text_Changes.Active then
+         --  If we are applying incremental changes, we can't skip the
+         --  call to Apply_Changes, since this would break synchronization.
+         Document.Apply_Changes (Value.contentChanges);
 
-      Document.Apply_Changes (Value.contentChanges);
+         --  However, we should skip the Indexing part if the next change in
+         --  the queue will re-change the text document.
+         if Skip_Did_Change then
+            return;
+         end if;
+      else
+         --  If we are not applying incremental changes, we can skip
+         --  Apply_Changes: the next change will contain the full text.
+         if Skip_Did_Change then
+            return;
+         end if;
+         Document.Apply_Changes (Value.contentChanges);
+      end if;
 
       --  Reindex the document in each of the contexts where it is relevant
 
