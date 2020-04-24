@@ -1175,18 +1175,28 @@ package LSP.Messages is
    --```
    type DocumentSelector is new DocumentFilter_Vectors.Vector with null record;
 
-   type dynamicRegistration is new Optional_Boolean;
+   type Trivial_Capabilities is record
+      dynamicRegistration : Optional_Boolean;
+   end record;
+   --  This type represent trivial client capabilities with just one property
+   --  like this:
+   --  export interface XXX_ClientCapabilities {
+   --	  dynamicRegistration?: boolean;
+   --  }
 
-   procedure Read_dynamicRegistration
+   procedure Read_Trivial_Capabilities
      (S : access Ada.Streams.Root_Stream_Type'Class;
-      V : out dynamicRegistration);
+      V : out Trivial_Capabilities);
 
-   procedure Write_dynamicRegistration
+   procedure Write_Trivial_Capabilities
      (S : access Ada.Streams.Root_Stream_Type'Class;
-      V : dynamicRegistration);
+      V : Trivial_Capabilities);
 
-   for dynamicRegistration'Read use Read_dynamicRegistration;
-   for dynamicRegistration'Write use Write_dynamicRegistration;
+   for Trivial_Capabilities'Read use Read_Trivial_Capabilities;
+   for Trivial_Capabilities'Write use Write_Trivial_Capabilities;
+
+   package Optional_Trivial_Capabilities_Package is new LSP.Generic_Optional (Trivial_Capabilities);
+   type Optional_Trivial_Capabilities is new Optional_Trivial_Capabilities_Package.Optional_Type;
 
    --
    --```typescript
@@ -1341,7 +1351,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DidChangeConfigurationClientCapabilities is dynamicRegistration;
+   subtype DidChangeConfigurationClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface DidChangeWatchedFilesClientCapabilities {
@@ -1353,7 +1363,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DidChangeWatchedFilesClientCapabilities is dynamicRegistration;
+   subtype DidChangeWatchedFilesClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --interface WorkspaceSymbolClientCapabilities {
@@ -1488,7 +1498,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype ExecuteCommandClientCapabilities is dynamicRegistration;
+   subtype ExecuteCommandClientCapabilities is Optional_Trivial_Capabilities;
 
    type WorkspaceClientCapabilities is record
       applyEdit: Optional_Boolean;
@@ -2276,7 +2286,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype ReferenceClientCapabilities is dynamicRegistration;
+   subtype ReferenceClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface DocumentHighlightClientCapabilities {
@@ -2286,7 +2296,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DocumentHighlightClientCapabilities is dynamicRegistration;
+   subtype DocumentHighlightClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface CodeActionClientCapabilities {
@@ -2377,7 +2387,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype CodeLensClientCapabilities is dynamicRegistration;
+   subtype CodeLensClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface DocumentLinkClientCapabilities {
@@ -2424,7 +2434,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DocumentColorClientCapabilities is dynamicRegistration;
+   subtype DocumentColorClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface DocumentFormattingClientCapabilities {
@@ -2434,7 +2444,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DocumentFormattingClientCapabilities is dynamicRegistration;
+   subtype DocumentFormattingClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface DocumentRangeFormattingClientCapabilities {
@@ -2444,7 +2454,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DocumentRangeFormattingClientCapabilities is dynamicRegistration;
+   subtype DocumentRangeFormattingClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface DocumentOnTypeFormattingClientCapabilities {
@@ -2454,7 +2464,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype DocumentOnTypeFormattingClientCapabilities is dynamicRegistration;
+   subtype DocumentOnTypeFormattingClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --export interface RenameClientCapabilities {
@@ -2620,7 +2630,7 @@ package LSP.Messages is
    --	dynamicRegistration?: boolean;
    --}
    --```
-   subtype SelectionRangeClientCapabilities is dynamicRegistration;
+   subtype SelectionRangeClientCapabilities is Optional_Trivial_Capabilities;
 
    --```typescript
    --/**

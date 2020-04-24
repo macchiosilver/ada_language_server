@@ -1415,22 +1415,22 @@ package body LSP.Messages is
       Read_Array (V.Root);
    end Read_DocumentSymbol_Tree;
 
-   ------------------------------
-   -- Read_dynamicRegistration --
-   ------------------------------
+   -------------------------------
+   -- Read_Trivial_Capabilities --
+   -------------------------------
 
-   procedure Read_dynamicRegistration
+   procedure Read_Trivial_Capabilities
      (S : access Ada.Streams.Root_Stream_Type'Class;
-      V : out dynamicRegistration)
+      V : out Trivial_Capabilities)
    is
       JS : LSP.JSON_Streams.JSON_Stream'Class renames
         LSP.JSON_Streams.JSON_Stream'Class (S.all);
    begin
       JS.Start_Object;
       Read_Optional_Boolean
-        (JS, +"dynamicRegistration", Optional_Boolean (V));
+        (JS, +"dynamicRegistration", V.dynamicRegistration);
       JS.End_Object;
-   end Read_dynamicRegistration;
+   end Read_Trivial_Capabilities;
 
    --------------------------------
    -- Read_ExecuteCommandOptions --
@@ -2817,17 +2817,17 @@ package body LSP.Messages is
       JS.Key ("signatureHelp");
       Optional_SignatureHelpClientCapabilities'Read (S, V.signatureHelp);
       JS.Key ("references");
-      dynamicRegistration'Read (S, V.references);
+      Optional_Trivial_Capabilities'Read (S, V.references);
       JS.Key ("documentHighlight");
-      dynamicRegistration'Read (S, V.documentHighlight);
+      Optional_Trivial_Capabilities'Read (S, V.documentHighlight);
       JS.Key ("documentSymbol");
       Optional_DocumentSymbolClientCapabilities'Read (S, V.documentSymbol);
       JS.Key ("formatting");
-      dynamicRegistration'Read (S, V.formatting);
+      Optional_Trivial_Capabilities'Read (S, V.formatting);
       JS.Key ("rangeFormatting");
-      dynamicRegistration'Read (S, V.rangeFormatting);
+      Optional_Trivial_Capabilities'Read (S, V.rangeFormatting);
       JS.Key ("onTypeFormatting");
-      dynamicRegistration'Read (S, V.onTypeFormatting);
+      Optional_Trivial_Capabilities'Read (S, V.onTypeFormatting);
       JS.Key ("declaration");
       Optional_DeclarationClientCapabilities'Read (S, V.declaration);
       JS.Key ("definition");
@@ -2839,11 +2839,11 @@ package body LSP.Messages is
       JS.Key ("codeAction");
       Optional_CodeActionClientCapabilities'Read (S, V.codeAction);
       JS.Key ("codeLens");
-      dynamicRegistration'Read (S, V.codeLens);
+      Optional_Trivial_Capabilities'Read (S, V.codeLens);
       JS.Key ("documentLink");
       Optional_DocumentLinkClientCapabilities'Read (S, V.documentLink);
       JS.Key ("colorProvider");
-      dynamicRegistration'Read (S, V.colorProvider);
+      Optional_Trivial_Capabilities'Read (S, V.colorProvider);
       JS.Key ("rename");
       Optional_RenameClientCapabilities'Read (S, V.rename);
       JS.Key ("publishDiagnostics");
@@ -3218,13 +3218,13 @@ package body LSP.Messages is
       JS.Key ("workspaceEdit");
       WorkspaceEditClientCapabilities'Read (S, V.workspaceEdit);
       JS.Key ("didChangeConfiguration");
-      dynamicRegistration'Read (S, V.didChangeConfiguration);
+      Optional_Trivial_Capabilities'Read (S, V.didChangeConfiguration);
       JS.Key ("didChangeWatchedFiles");
-      dynamicRegistration'Read (S, V.didChangeWatchedFiles);
+      Optional_Trivial_Capabilities'Read (S, V.didChangeWatchedFiles);
       JS.Key ("symbol");
       Optional_WorkspaceSymbolClientCapabilities'Read (S, V.symbol);
       JS.Key ("executeCommand");
-      dynamicRegistration'Read (S, V.executeCommand);
+      Optional_Trivial_Capabilities'Read (S, V.executeCommand);
       Read_Optional_Boolean (JS, +"workspaceFolders", V.workspaceFolders);
       Read_Optional_Boolean (JS, +"configuration", V.configuration);
       JS.End_Object;
@@ -4213,22 +4213,22 @@ package body LSP.Messages is
       Write_Array (V.Root);
    end Write_DocumentSymbol_Tree;
 
-   -------------------------------
-   -- Write_dynamicRegistration --
-   -------------------------------
+   --------------------------------
+   -- Write_Trivial_Capabilities --
+   --------------------------------
 
-   procedure Write_dynamicRegistration
+   procedure Write_Trivial_Capabilities
      (S : access Ada.Streams.Root_Stream_Type'Class;
-      V : dynamicRegistration)
+      V : Trivial_Capabilities)
    is
       JS : LSP.JSON_Streams.JSON_Stream'Class renames
         LSP.JSON_Streams.JSON_Stream'Class (S.all);
    begin
       JS.Start_Object;
-      Write_Optional_Boolean
-        (JS, +"dynamicRegistration", Optional_Boolean (V));
+      JS.Key ("dynamicRegistration");
+      Optional_Boolean'Write (S, V.dynamicRegistration);
       JS.End_Object;
-   end Write_dynamicRegistration;
+   end Write_Trivial_Capabilities;
 
    -----------------------------
    -- Write_FileSystemWatcher --
